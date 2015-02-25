@@ -17,7 +17,7 @@ public class PieSensor : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-
+		range = 2;
 	}
 	
 	// Update is called once per frame
@@ -36,7 +36,7 @@ public class PieSensor : MonoBehaviour {
 		for(int i = 0; i < p.Length; i++)
 		{
 			//if object is not the player and is tagged as an agent
-			if(transform != p[i].transform && p[i].gameObject.tag == "Agent")
+			if(transform != p[i].transform && p[i].gameObject.CompareTag("Enemy"))
 			{
 				//get the vector between them
 				Vector3 targetDir = p[i].transform.position - transform.position;
@@ -86,13 +86,31 @@ public class PieSensor : MonoBehaviour {
 		output = u + "," + r + "," + d + "," + l;
 		print(u + "," + r + "," + d + "," + l);
 
+		//draw debug rays to represent pie sensor slices
+		//upper left
+		Vector3 sensorDir = transform.up - transform.right;
+		sensorDir.Normalize ();
+		Debug.DrawRay (transform.position, sensorDir*range, Color.blue);
+		//upper right
+		sensorDir = transform.up + transform.right;
+		sensorDir.Normalize ();
+		Debug.DrawRay (transform.position, sensorDir*range, Color.blue);
+		//lower left
+		sensorDir = -transform.up - transform.right;
+		sensorDir.Normalize ();
+		Debug.DrawRay (transform.position, sensorDir*range, Color.blue);
+		//lower right
+		sensorDir = -transform.up + transform.right;
+		sensorDir.Normalize ();
+		Debug.DrawRay (transform.position, sensorDir*range, Color.blue);
+
 	}
 
 	void OnGUI()
 	{
 		GUILayout.Label("Position -- x: " + transform.position.x.ToString("F") + "   y: " + transform.position.y.ToString("F"));
 		GUILayout.Label("Heading: " + transform.eulerAngles.z.ToString("F"));
-		GUILayout.Label("Activation Levels : " + output);
+		GUILayout.Label("Pie Sensor:\nActivation Levels : " + output);
 	}
 
 }

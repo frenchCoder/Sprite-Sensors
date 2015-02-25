@@ -11,6 +11,7 @@ public class WallSensor : MonoBehaviour
 	// Use this for initialization
 	void Start () 
 	{
+		sensorRange = 4;
 		distLeftDiag = (float)sensorRange;
 		distRightDiag = (float)sensorRange;
 		distUp = (float)sensorRange;
@@ -29,7 +30,6 @@ public class WallSensor : MonoBehaviour
 		right_diagonal.Normalize();
 		distRightDiag = check_and_draw (right_diagonal, "right diagonal");
 
-
 		//LEFT DIAGONAL: Looks for wall in forward left diagonal of agent
 		Vector3 left_diagonal = transform.up - transform.right;
 		left_diagonal.Normalize();
@@ -38,25 +38,28 @@ public class WallSensor : MonoBehaviour
 
 	void OnGUI()
 	{
-		String feelerDeets = "(" + distLeftDiag + ", " + distUp + ", " + distRightDiag + ")";
-		GUI.Label(new Rect (0, 0, 300, 20),  feelerDeets);
+		String feelerDeets = "(" + distLeftDiag.ToString("F2") + ", " + distUp.ToString("F2") + ", " + distRightDiag.ToString("F2") + ")";
+
+		GUI.Label(new Rect (0, Screen.height-90, 200, 100),  "Wall Sensor:\n" + feelerDeets);
 	}
 
 	float check_and_draw(Vector3 dir, String dir_text)
 	{
 		float buffer = 0.000001f;
-		String text = "";
 		RaycastHit hit;
+		string text = "";
+		
 		if (Physics.Raycast (transform.position, dir, out hit, sensorRange + buffer) && hit.transform.tag.Equals("Wall"))
 		{
-			text = "Wall detected " + dir_text + " of agent: " + hit.distance + " units away from agent.";
+			print (hit.transform.tag);
+			text = "\nWall detected " + dir_text + " of agent: " + hit.distance.ToString("F2") + " units away.";
 			Debug.DrawRay(transform.position, dir * hit.distance);
 			print ( text );
 			return hit.distance;
 		}
 		else
 		{
-			text = "Wall not " + dir_text + " of agent.";
+			text = "\nWall not " + dir_text + " of agent.";
 			Debug.DrawRay(transform.position, dir * sensorRange);
 			print ( text );
 		}
